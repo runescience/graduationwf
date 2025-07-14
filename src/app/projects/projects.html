@@ -2,73 +2,116 @@
 <div class="projects-container">
   <h2>Project Management</h2>
   
-  <form (ngSubmit)="onSubmit()" #projectForm="ngForm" class="project-form">
-    <div class="form-group">
-      <label for="project_name">Project Name:</label>
-      <input 
-        type="text" 
-        id="project_name" 
-        name="project_name"
-        [(ngModel)]="project.project_name" 
-        required
-        class="form-control">
+  <div class="projects-layout">
+    <!-- Left side: Project list -->
+    <div class="project-list-container">
+      <h3>Projects</h3>
+      <div class="project-list">
+        <div 
+          *ngFor="let proj of projects; let i = index" 
+          class="project-item"
+          [class.selected]="selectedProjectIndex === i"
+          (click)="selectProject(i)">
+          {{ proj.project_name || 'Untitled Project' }}
+        </div>
+        <div *ngIf="projects.length === 0" class="no-projects">
+          No projects available
+        </div>
+      </div>
     </div>
 
-    <div class="form-group">
-      <label for="workflow_appid">Workflow App ID:</label>
-      <input 
-        type="text" 
-        id="workflow_appid" 
-        name="workflow_appid"
-        [(ngModel)]="project.workflow_appid" 
-        required
-        class="form-control">
-    </div>
+    <!-- Right side: CRUD form -->
+    <div class="project-form-container">
+      <h3>{{ isEditing ? 'Edit Project' : 'Create New Project' }}</h3>
+      
+      <form (ngSubmit)="onSubmit()" #projectForm="ngForm" class="project-form">
+        <div class="form-group">
+          <label for="project_name">Project Name:</label>
+          <input 
+            type="text" 
+            id="project_name" 
+            name="project_name"
+            [(ngModel)]="project.project_name" 
+            required
+            class="form-control">
+        </div>
 
-    <div class="form-group">
-      <label for="project_owner_name">Project Owner Name:</label>
-      <input 
-        type="text" 
-        id="project_owner_name" 
-        name="project_owner_name"
-        [(ngModel)]="project.project_owner_name" 
-        required
-        class="form-control">
-    </div>
+        <div class="form-group">
+          <label for="workflow_appid">Workflow App ID:</label>
+          <input 
+            type="text" 
+            id="workflow_appid" 
+            name="workflow_appid"
+            [(ngModel)]="project.workflow_appid" 
+            required
+            class="form-control">
+        </div>
 
-    <div class="form-group">
-      <label for="owner_division">Owner Division:</label>
-      <input 
-        type="text" 
-        id="owner_division" 
-        name="owner_division"
-        [(ngModel)]="project.owner_division" 
-        required
-        class="form-control">
-    </div>
+        <div class="form-group">
+          <label for="project_owner_name">Project Owner Name:</label>
+          <input 
+            type="text" 
+            id="project_owner_name" 
+            name="project_owner_name"
+            [(ngModel)]="project.project_owner_name" 
+            required
+            class="form-control">
+        </div>
 
-    <div class="form-group">
-      <label for="app_name">App Name:</label>
-      <input 
-        type="text" 
-        id="app_name" 
-        name="app_name"
-        [(ngModel)]="project.app_name" 
-        required
-        class="form-control">
-    </div>
+        <div class="form-group">
+          <label for="owner_division">Owner Division:</label>
+          <input 
+            type="text" 
+            id="owner_division" 
+            name="owner_division"
+            [(ngModel)]="project.owner_division" 
+            required
+            class="form-control">
+        </div>
 
-    <button type="submit" [disabled]="!projectForm.form.valid" class="submit-btn">
-      Save Project
+        <div class="form-group">
+          <label for="app_name">App Name:</label>
+          <input 
+            type="text" 
+            id="app_name" 
+            name="app_name"
+            [(ngModel)]="project.app_name" 
+            required
+            class="form-control">
+        </div>
+
+        <button type="submit" [disabled]="!projectForm.form.valid" class="submit-btn">
+          {{ isEditing ? 'Update Project' : 'Save Project' }}
+        </button>
+      </form>
+
+      <div class="project-preview" *ngIf="project.project_name">
+        <h3>Project Preview</h3>
+        <p><strong>Project Name:</strong> {{ project.project_name }}</p>
+        <p><strong>Workflow App ID:</strong> {{ project.workflow_appid }}</p>
+        <p><strong>Project Owner:</strong> {{ project.project_owner_name }}</p>
+        <p><strong>Owner Division:</strong> {{ project.owner_division }}</p>
+        <p><strong>App Name:</strong> {{ project.app_name }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom buttons -->
+  <div class="action-buttons">
+    <button (click)="newProject()" class="action-btn new-btn">
+      New Project
     </button>
-  </form>
-
-  <div class="project-preview" *ngIf="project.project_name">
-    <h3>Project Preview</h3>
-    <p><strong>Project Name:</strong> {{ project.project_name }}</p>
-    <p><strong>Workflow App ID:</strong> {{ project.workflow_appid }}</p>
-    <p><strong>Project Owner:</strong> {{ project.project_owner_name }}</p>
-    <p><strong>Owner Division:</strong> {{ project.owner_division }}</p>
-    <p><strong>App Name:</strong> {{ project.app_name }}</p>
+    <button 
+      (click)="editProject()" 
+      [disabled]="selectedProjectIndex === -1"
+      class="action-btn edit-btn">
+      Edit Project
+    </button>
+    <button 
+      (click)="deleteProject()" 
+      [disabled]="selectedProjectIndex === -1"
+      class="action-btn delete-btn">
+      Delete Project
+    </button>
   </div>
 </div>
