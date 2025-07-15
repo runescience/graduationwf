@@ -1,1 +1,135 @@
-<p>wfconfigs works!</p>
+
+<div class="wfconfigs-container">
+  <h2>Workflow Configuration Management</h2>
+  
+  <div class="wfconfigs-layout">
+    <!-- Left side: Project list -->
+    <div class="project-list-container">
+      <h3>Projects</h3>
+      <div class="project-list">
+        <div 
+          *ngFor="let config of wfconfigs; let i = index" 
+          class="project-item"
+          [class.selected]="selectedConfigIndex === i"
+          (click)="selectConfig(i)">
+          {{ config.project_name || 'Untitled Project' }}
+        </div>
+        <div *ngIf="wfconfigs.length === 0" class="no-projects">
+          No workflow configurations available
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side: CRUD form -->
+    <div class="wfconfig-form-container">
+      <h3>{{ isEditing ? 'Edit Workflow Configuration' : 'Create New Workflow Configuration' }}</h3>
+      
+      <form (ngSubmit)="onSubmit()" #wfconfigForm="ngForm" class="wfconfig-form">
+        <div class="form-group">
+          <label for="workflow_config_id">Workflow Config ID:</label>
+          <input 
+            type="text" 
+            id="workflow_config_id" 
+            name="workflow_config_id"
+            [(ngModel)]="wfconfig.workflow_config_id" 
+            required
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="project_name">Project Name:</label>
+          <input 
+            type="text" 
+            id="project_name" 
+            name="project_name"
+            [(ngModel)]="wfconfig.project_name" 
+            required
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="workflow_name">Workflow Name:</label>
+          <input 
+            type="text" 
+            id="workflow_name" 
+            name="workflow_name"
+            [(ngModel)]="wfconfig.workflow_name" 
+            required
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="workflow_description">Workflow Description:</label>
+          <textarea 
+            id="workflow_description" 
+            name="workflow_description"
+            [(ngModel)]="wfconfig.workflow_description" 
+            required
+            class="form-control"
+            rows="3">
+          </textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="workflow_version">Workflow Version:</label>
+          <input 
+            type="text" 
+            id="workflow_version" 
+            name="workflow_version"
+            [(ngModel)]="wfconfig.workflow_version" 
+            required
+            class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label for="workflow_status">Workflow Status:</label>
+          <select 
+            id="workflow_status" 
+            name="workflow_status"
+            [(ngModel)]="wfconfig.workflow_status" 
+            required
+            class="form-control">
+            <option value="">Select Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+            <option value="Draft">Draft</option>
+            <option value="Deprecated">Deprecated</option>
+          </select>
+        </div>
+
+        <button type="submit" [disabled]="!wfconfigForm.form.valid" class="submit-btn">
+          {{ isEditing ? 'Update Configuration' : 'Save Configuration' }}
+        </button>
+      </form>
+
+      <div class="wfconfig-preview" *ngIf="wfconfig.project_name">
+        <h3>Configuration Preview</h3>
+        <p><strong>Config ID:</strong> {{ wfconfig.workflow_config_id }}</p>
+        <p><strong>Project Name:</strong> {{ wfconfig.project_name }}</p>
+        <p><strong>Workflow Name:</strong> {{ wfconfig.workflow_name }}</p>
+        <p><strong>Description:</strong> {{ wfconfig.workflow_description }}</p>
+        <p><strong>Version:</strong> {{ wfconfig.workflow_version }}</p>
+        <p><strong>Status:</strong> {{ wfconfig.workflow_status }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom buttons -->
+  <div class="action-buttons">
+    <button (click)="newConfig()" class="action-btn new-btn">
+      New Configuration
+    </button>
+    <button 
+      (click)="editConfig()" 
+      [disabled]="selectedConfigIndex === -1"
+      class="action-btn edit-btn">
+      Edit Configuration
+    </button>
+    <button 
+      (click)="deleteConfig()" 
+      [disabled]="selectedConfigIndex === -1"
+      class="action-btn delete-btn">
+      Delete Configuration
+    </button>
+  </div>
+</div>
