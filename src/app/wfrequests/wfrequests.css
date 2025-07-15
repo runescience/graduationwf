@@ -26,7 +26,7 @@
 
 .wfrequests-layout {
   display: grid;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 1fr 2.5fr;
   gap: 25px;
   margin-bottom: 30px;
   min-height: 700px;
@@ -39,7 +39,8 @@
   border-radius: 12px;
   padding: 25px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  min-width: 300px;
+  min-width: 250px;
+  max-width: 350px;
   border: 1px solid #dee2e6;
 }
 
@@ -104,8 +105,9 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   max-height: 700px;
   overflow-y: auto;
-  min-width: 0;
+  min-width: 600px;
   border: 1px solid #dee2e6;
+  flex: 1;
 }
 
 .wfrequest-form-container h3 {
@@ -150,9 +152,10 @@
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 25px;
+  gap: 30px;
   margin-bottom: 20px;
   align-items: start;
+  width: 100%;
 }
 
 .form-row .form-group {
@@ -354,9 +357,19 @@ select.form-control {
 }
 
 /* Responsive design */
+@media screen and (max-width: 1400px) {
+  .wfrequests-layout {
+    grid-template-columns: 1fr 2.2fr;
+  }
+  
+  .form-row {
+    gap: 25px;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   .wfrequests-layout {
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 1fr 2fr;
   }
   
   .form-row {
@@ -366,7 +379,7 @@ select.form-control {
 
 @media screen and (max-width: 992px) {
   .wfrequests-layout {
-    grid-template-columns: 250px 1fr;
+    grid-template-columns: 1fr 1.8fr;
   }
   
   .form-row {
