@@ -1,1 +1,418 @@
-<p>wfrequests works!</p>
+
+<div class="wfrequests-container">
+  <h2>Workflow Request Management</h2>
+  
+  <div class="wfrequests-layout">
+    <!-- Left side: Request list -->
+    <div class="request-list-container">
+      <h3>Workflow Requests</h3>
+      <div class="request-list">
+        <div 
+          *ngFor="let request of wfrequests; let i = index" 
+          class="request-item"
+          [class.selected]="selectedRequestIndex === i"
+          (click)="selectRequest(i)">
+          {{ request.unique_Request_id || 'Untitled Request' }}
+        </div>
+        <div *ngIf="wfrequests.length === 0" class="no-requests">
+          No workflow requests available
+        </div>
+      </div>
+    </div>
+
+    <!-- Right side: CRUD form -->
+    <div class="wfrequest-form-container">
+      <h3>{{ isEditing ? 'Edit Workflow Request' : 'Create New Workflow Request' }}</h3>
+      
+      <form (ngSubmit)="onSubmit()" #wfrequestForm="ngForm" class="wfrequest-form">
+        
+        <!-- Workflow Request Data Subpanel -->
+        <div class="form-subpanel">
+          <h4>Workflow Request Information</h4>
+          
+          <div class="form-group">
+            <label for="unique_Request_id">Unique Request ID:</label>
+            <input 
+              type="text" 
+              id="unique_Request_id" 
+              name="unique_Request_id"
+              [(ngModel)]="wfrequest.unique_Request_id" 
+              required
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="wf_execution_arn">Workflow Execution ARN:</label>
+            <input 
+              type="text" 
+              id="wf_execution_arn" 
+              name="wf_execution_arn"
+              [(ngModel)]="wfrequest.wf_execution_arn" 
+              required
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="task_step">Task Step:</label>
+            <input 
+              type="text" 
+              id="task_step" 
+              name="task_step"
+              [(ngModel)]="wfrequest.task_step" 
+              required
+              class="form-control"
+              placeholder="e.g., reviewer1, reviewer2">
+          </div>
+
+          <div class="form-group">
+            <label for="request_status">Request Status:</label>
+            <select 
+              id="request_status" 
+              name="request_status"
+              [(ngModel)]="wfrequest.request_status" 
+              required
+              class="form-control">
+              <option value="">Select Status</option>
+              <option value="pending">Pending</option>
+              <option value="withdrawn">Withdrawn</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="currently_owned_by">Currently Owned By:</label>
+            <input 
+              type="text" 
+              id="currently_owned_by" 
+              name="currently_owned_by"
+              [(ngModel)]="wfrequest.currently_owned_by" 
+              required
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="created_by">Created By:</label>
+            <input 
+              type="text" 
+              id="created_by" 
+              name="created_by"
+              [(ngModel)]="wfrequest.created_by" 
+              required
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="modified_by">Modified By:</label>
+            <input 
+              type="text" 
+              id="modified_by" 
+              name="modified_by"
+              [(ngModel)]="wfrequest.modified_by" 
+              required
+              class="form-control">
+          </div>
+        </div>
+
+        <!-- Form Data Subpanel -->
+        <div class="form-subpanel">
+          <h4>Form Data</h4>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="case_id">Case ID:</label>
+              <input 
+                type="text" 
+                id="case_id" 
+                name="case_id"
+                [(ngModel)]="wfrequest.form_data.case_id" 
+                required
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="case_start_date">Case Start Date:</label>
+              <input 
+                type="datetime-local" 
+                id="case_start_date" 
+                name="case_start_date"
+                [(ngModel)]="wfrequest.form_data.case_start_date" 
+                required
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="stage_start_date">Stage Start Date:</label>
+              <input 
+                type="datetime-local" 
+                id="stage_start_date" 
+                name="stage_start_date"
+                [(ngModel)]="wfrequest.form_data.stage_start_date" 
+                required
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="degree_type">Degree Type:</label>
+              <select 
+                id="degree_type" 
+                name="degree_type"
+                [(ngModel)]="wfrequest.form_data.degree_type" 
+                required
+                class="form-control">
+                <option value="">Select Degree Type</option>
+                <option value="PhD">PhD</option>
+                <option value="Masters">Masters</option>
+                <option value="Bachelor">Bachelor</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="awards">Awards:</label>
+              <input 
+                type="text" 
+                id="awards" 
+                name="awards"
+                [(ngModel)]="wfrequest.form_data.awards" 
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="priority">Priority:</label>
+              <select 
+                id="priority" 
+                name="priority"
+                [(ngModel)]="wfrequest.form_data.priority" 
+                required
+                class="form-control">
+                <option value="">Select Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="timeframe">Timeframe:</label>
+              <input 
+                type="text" 
+                id="timeframe" 
+                name="timeframe"
+                [(ngModel)]="wfrequest.form_data.timeframe" 
+                required
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="ceremony_type">Ceremony Type:</label>
+              <input 
+                type="text" 
+                id="ceremony_type" 
+                name="ceremony_type"
+                [(ngModel)]="wfrequest.form_data.ceremony_type" 
+                required
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="major">Major:</label>
+              <input 
+                type="text" 
+                id="major" 
+                name="major"
+                [(ngModel)]="wfrequest.form_data.major" 
+                required
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="department_chair">Department Chair:</label>
+              <input 
+                type="text" 
+                id="department_chair" 
+                name="department_chair"
+                [(ngModel)]="wfrequest.form_data.department_chair" 
+                required
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="chair_name">Chair Name:</label>
+              <input 
+                type="text" 
+                id="chair_name" 
+                name="chair_name"
+                [(ngModel)]="wfrequest.form_data.chair_name" 
+                required
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="window_quan">Window Quantity:</label>
+              <input 
+                type="number" 
+                id="window_quan" 
+                name="window_quan"
+                [(ngModel)]="wfrequest.form_data.window_quan" 
+                required
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="window_type">Window Type:</label>
+            <input 
+              type="text" 
+              id="window_type" 
+              name="window_type"
+              [(ngModel)]="wfrequest.form_data.window_type" 
+              required
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="letter_of_recommendation">Letter of Recommendation:</label>
+            <textarea 
+              id="letter_of_recommendation" 
+              name="letter_of_recommendation"
+              [(ngModel)]="wfrequest.form_data.letter_of_recommendation" 
+              required
+              class="form-control"
+              rows="3">
+            </textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="supporting_doc">Supporting Document:</label>
+            <input 
+              type="text" 
+              id="supporting_doc" 
+              name="supporting_doc"
+              [(ngModel)]="wfrequest.form_data.supporting_doc" 
+              class="form-control">
+          </div>
+        </div>
+
+        <!-- Workflow Config Subpanel -->
+        <div class="form-subpanel">
+          <h4>Workflow Configuration</h4>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label for="workflow_name">Workflow Name:</label>
+              <input 
+                type="text" 
+                id="workflow_name" 
+                name="workflow_name"
+                [(ngModel)]="wfrequest.workflow_config_blob.workflow_name" 
+                required
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="workflow_config_id">Workflow Config ID:</label>
+              <input 
+                type="text" 
+                id="workflow_config_id" 
+                name="workflow_config_id"
+                [(ngModel)]="wfrequest.workflow_config_blob.workflow_config_id" 
+                required
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="workflow_appid">Workflow App ID:</label>
+              <input 
+                type="text" 
+                id="workflow_appid" 
+                name="workflow_appid"
+                [(ngModel)]="wfrequest.workflow_config_blob.workflow_appid" 
+                required
+                class="form-control">
+            </div>
+
+            <div class="form-group">
+              <label for="wf_definition_arn">Workflow Definition ARN:</label>
+              <input 
+                type="text" 
+                id="wf_definition_arn" 
+                name="wf_definition_arn"
+                [(ngModel)]="wfrequest.workflow_config_blob.wf_definition_arn" 
+                required
+                class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="version">Version:</label>
+            <input 
+              type="text" 
+              id="version" 
+              name="version"
+              [(ngModel)]="wfrequest.workflow_config_blob.version" 
+              required
+              class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="formly_config_blob">Formly Config Blob:</label>
+            <textarea 
+              id="formly_config_blob" 
+              name="formly_config_blob"
+              [(ngModel)]="wfrequest.workflow_config_blob.formly_config_blob" 
+              required
+              class="form-control"
+              rows="4"
+              placeholder="JSON string of the formly config">
+            </textarea>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="!wfrequestForm.form.valid" class="submit-btn">
+          {{ isEditing ? 'Update Request' : 'Save Request' }}
+        </button>
+      </form>
+
+      <div class="wfrequest-preview" *ngIf="wfrequest.unique_Request_id">
+        <h3>Request Preview</h3>
+        <p><strong>Request ID:</strong> {{ wfrequest.unique_Request_id }}</p>
+        <p><strong>Status:</strong> {{ wfrequest.request_status }}</p>
+        <p><strong>Case ID:</strong> {{ wfrequest.form_data.case_id }}</p>
+        <p><strong>Degree Type:</strong> {{ wfrequest.form_data.degree_type }}</p>
+        <p><strong>Workflow Name:</strong> {{ wfrequest.workflow_config_blob.workflow_name }}</p>
+        <p><strong>Currently Owned By:</strong> {{ wfrequest.currently_owned_by }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom buttons -->
+  <div class="action-buttons">
+    <button (click)="newRequest()" class="action-btn new-btn">
+      New Request
+    </button>
+    <button 
+      (click)="editRequest()" 
+      [disabled]="selectedRequestIndex === -1"
+      class="action-btn edit-btn">
+      Edit Request
+    </button>
+    <button 
+      (click)="deleteRequest()" 
+      [disabled]="selectedRequestIndex === -1"
+      class="action-btn delete-btn">
+      Delete Request
+    </button>
+  </div>
+</div>
