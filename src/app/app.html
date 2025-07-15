@@ -182,10 +182,15 @@
 </style>
 
 <main class="main">
-  <div class="content">
-    <nav>
-      <a routerLink="/projects" class="nav-link">Projects</a>
+  <div class="nav-container">
+    <nav class="nav-bar">
+      <a routerLink="/projects" routerLinkActive="active" class="nav-link">Projects</a>
+      <a routerLink="/wfconfigs" routerLinkActive="active" class="nav-link">Workflow Configs</a>
+      <a routerLink="/wfrequests" routerLinkActive="active" class="nav-link">Workflow Requests</a>
     </nav>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
   </div>
 </main>
 
