@@ -1,0 +1,28 @@
+.nav-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--bright-blue);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+  }
+
+  .nav-link:hover {
+    background: var(--electric-violet);
+  }
+
+  @media screen and (max-width: 650px) {
+    .content {
+      flex-direction: column;
+      width: max-content;
+    }
+
+    .divider {
+      height: 1px;
+      width: 100%;
+      background: var(--red-to-pink-to-purple-horizontal-gradient);
+      margin-block: 1.5rem;
+    }
+  }
